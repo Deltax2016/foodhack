@@ -41,10 +41,15 @@ def reg(request):
 			else:
 				resp.write('ok')
 				os.makedirs(email)
-				f = open(email + '/conf.txt','w')
+				f = open(email+'/conf.txt','w')
 				f.write(name + '\n' + passv + '\n' + photo + '\n')
 				f.close()
-				f = open(email + '/conf.txt','w')
+				f = open(email+'/liked.txt','w')
+				f.close()
+				f = open(email+'/friends.txt','w')
+				f.close()
+				f = open('glob_conf.txt','w')
+				f.write(email)
 				f.close()
 			return resp
 	resp = HttpResponse()
@@ -90,7 +95,7 @@ def friends(request):
 	return resp
 
 @csrf_exempt
-def friends(request):
+def like(request):
 	if request.method == 'GET':
 		resp = HttpResponse()
 		resp.status_code = 405
@@ -108,21 +113,46 @@ def friends(request):
 		else:
 			resp = HttpResponse()
 			resp.status_code = 400
-			if os.path.isfile(email + '/friends.txt'):
-				f = open(email + '/friends.txt','r')
-				for line in f:
-					resp.write(line.split('\n')[0]+'&')
-					f1 = open(line.split('\n')[0]+'/conf.txt','r')
-					halo = f1.read().split('\n')
-					resp.write(halo[0]+'&')
-					resp.write(halo[2]+'$')
-					f1.close()
-
+			f = open(likes + '/liked.txt','r')
+			q = f.read().find(liked)
+			f.close()
+			if q==-1:
+				f = open(liked + '/liked.txt','a')
+				f.write(likes)
 			else:
-				resp.write('no friends')
+				f = open(liked + '/friends.txt','a')
+				f.write(likes)
+				f.close()
+				f = open(likes + '/friends.txt','a')
+				f.write(liked)
+				f.close()
+				resp.write('math')
 				print("ne ok ")
 			return resp
 	resp = HttpResponse()
 	resp.status_code = 204
 	resp.write('We need a request')
 	return resp
+
+@csrf_exempt
+def near(request):
+	if request.method == 'GET':
+		resp = HttpResponse()
+		z = request.GET.get('user')
+		print(z)
+		resp.status_code = 200
+		f = open('glob_conf.txt','r')
+		f1 = open(z + '/friends.txt','r')
+		for line in f:
+			if f1.read().find(line)==-1:
+				resp.write(line + '&')
+				f2 = open(line + '/conf.txt')
+				w = f2.read().split('\n')
+				resp.write(w[0]+'&')
+				resp.write(w[2]+'')
+		return resp
+	resp = HttpResponse()
+	resp.status_code = 204
+	resp.write('We need a request')
+	return resp
+
