@@ -22,4 +22,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     url(r'^search/$', views.search),
     url(r'^api/register$', views.reg),
+    url(r'^api/friends$', views.friends),
+
 ]
