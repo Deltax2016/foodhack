@@ -11,5 +11,7 @@ urlpatterns = [
     url(r'^api/friends$', views.friends),
     url(r'^api/like$', views.like),
     url(r'^api/near$', views.near),
+    url(r'^api/gps$', views.gps),
+    url(r'^stop$', views.gps),
 
 ]

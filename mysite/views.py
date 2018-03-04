@@ -3,6 +3,7 @@ from django.http import HttpResponse, HttpRequest
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import redirect
 import json
+import keyboard
 import os
 
 # Create your views here.
@@ -84,7 +85,6 @@ def friends(request):
 					resp.write(halo[0]+'&')
 					resp.write(halo[2]+'$')
 					f1.close()
-
 			else:
 				resp.write('no friends')
 				print("ne ok ")
@@ -156,3 +156,42 @@ def near(request):
 	resp.write('We need a request')
 	return resp
 
+@csrf_exempt
+def gps(request):
+	if request.method == 'GET':
+		resp = HttpResponse()
+		z = request.GET.get('food')
+		print(z)
+		resp.status_code = 200
+		if z=='1':
+			f = open('gps1.txt','r')
+			q = f.read().split('\n')
+			resp.write(q[0]+'&')
+			resp.write(q[1]+'&')
+			resp.write(q[2])
+			f.close()
+		if z=='2':
+			f = open('gps2.txt','r')
+			q = f.read().split('\n')
+			resp.write(q[0])
+			f.close()
+		if z=='3':
+			f = open('gps3.txt','r')
+			q = f.read().split('\n')
+			resp.write(q[0]+'&')
+			resp.write(q[1])
+			f.close()
+		return resp
+	resp = HttpResponse()
+	resp.status_code = 204
+	resp.write('We need a request')
+	return resp
+
+@csrf_exempt
+def stop(request):
+	if request.method == 'GET':
+		keyboard.press('space')
+		resp = HttpResponse()
+		resp.status_code = 200
+	return resp
+		
